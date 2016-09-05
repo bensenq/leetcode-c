@@ -1,22 +1,20 @@
+// Iterative
 int getSum(int a, int b) {
-	int ret;
+	if (a == 0)return b;
+	if (b == 0)return a;
 
-	/* a + b = a + (b/a * a + b%a) = a(1+b/a) + b%a */
-
-	int times;
-	long aa = a >= 0 ? a : (-1*(long)a);
-	long bb = b >= 0 ? b : (-1*(long)b);
-	if (a == 0)
-		ret = b;
-	else if (b == 0)
-		ret = a;
-	else if (aa > bb) {
-		times = a / b;
-		ret = b*(++times) + a%b;
-	} else {
-		times = b / a;
-		ret = a*(++times) + b%a;
+	while (b != 0) {
+		/* bits will carry */
+		carry = a & b;
+		/* bits without carry */
+		a = a ^ b;
+		/* carried bits */
+		b = carry << 1;
 	}
+	return a;
+}
 
-	return ret;
+// Recursive
+int getSum(int a, int b) {
+	return (b == 0) ? a : getSum(a ^ b, (a & b) << 1);
 }
