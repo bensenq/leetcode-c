@@ -1,1 +1,1 @@
-echo $* | tr ' ' '-' | tr -d '.'
+mkdir `echo $* | tr ' ' '-' | tr -d '.'`
