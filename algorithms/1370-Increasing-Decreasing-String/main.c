@@ -30,11 +30,7 @@ void sort_select(char *s, int len) {
 
 
 void sort_insert(char *s, int len) {
-<<<<<<< HEAD
         int i, j, t;
-=======
-        int i, j, t, min;
->>>>>>> 8a51cd7a1f742cff5fc9f0649f4b1f0958fccf3a
         if (len == 1) return;
         for (j = 1; j < len; j++) {
                 int t = s[j]; 
