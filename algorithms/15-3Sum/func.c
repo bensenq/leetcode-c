@@ -12,20 +12,20 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 	int len = 0;
 	int **result, **old;
 	int *columnSizes;
-	int maxArraySize;
 	int max, min;
 	int found;
+    int size;
  	if (numsSize < 3) {
 	     *returnSize = 0;
 	     *returnColumnSizes = 0;
 	     return 0;
 	}
 
-	maxArraySize = numsSize * (numsSize - 1);
-	result = malloc(maxArraySize * sizeof(int *));
-
 	qsort(nums, numsSize, sizeof(int), compare);
 
+    size = numsSize;
+  	result = malloc(size * sizeof(int *));
+    
 	for (i = 0; i < numsSize - 2; i++) {
 		if (i > 0 && nums[i] == nums[i-1])
 			continue;
@@ -54,6 +54,13 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 				triplet[0] = nums[i];
 				triplet[1] = nums[j];
 				triplet[2] = nums[k];
+                if (len == size) {
+                    old = result;
+                    size = size * 2;
+                    result = malloc(size * sizeof(int *));
+                    memcpy(result, old, len * sizeof(int *));
+                    free(old);
+                }
 				result[len++] = triplet;
 				j++;
 				k--;
@@ -61,10 +68,6 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 			}
 		}
 	}
-	old = result;
-	result = malloc(len * sizeof(int *));
-	memcpy(result, old, len * sizeof(int *));
-	free(old);
 	columnSizes = malloc(len * sizeof(int));
 	for(i = 0; i < len; i++)
 		columnSizes[i] = 3;
@@ -72,6 +75,7 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 	*returnSize = len;
 	return result;
 }
+
 
 int main(){
 //	int test[] = {-1,0,1,2,-1,-4};
