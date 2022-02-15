@@ -12,7 +12,6 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 	int len = 0;
 	int **result, **old;
 	int *columnSizes;
-	int max, min;
 	int found;
     int size;
  	if (numsSize < 3) {
@@ -35,6 +34,10 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 		j = i + 1;
 		k = numsSize - 1;
 		while (j < k) {
+			if (nums[j] * 2 + nums[i] > 0)	//no need to continue
+				break;
+			if (nums[j] > 0)
+				break;
 			if (found && j > i+1 && nums[j] == nums[j-1]) {
 				j++;
 				continue;   //check repeated
@@ -70,7 +73,7 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 			}
 		}
 	}
-	columnSizes = malloc(len * sizeof(int));
+	columnSizes = malloc(len * sizeof(int *));
 	for(i = 0; i < len; i++)
 		columnSizes[i] = 3;
 	*returnColumnSizes = columnSizes;
