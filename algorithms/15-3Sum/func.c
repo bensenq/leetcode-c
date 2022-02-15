@@ -35,13 +35,13 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
 		while (j < k) {
 			if (found && j > i+1 && nums[j] == nums[j-1]) {
 				j++;
-				continue;
-			}
-
-			if (found && k < numsSize-2 && nums[k] == nums[k+1]) {
+				continue;   //check repeated
+			} else if (found && k < numsSize-2 && nums[k] == nums[k+1]) {
 				k--;
-				continue;
-			} 
+				continue;   //check repeated
+			} else {
+				found = 0;  //clear found flag
+			}
 
 			if (nums[j] + nums[k] > -nums[i]) {
 				k--;
