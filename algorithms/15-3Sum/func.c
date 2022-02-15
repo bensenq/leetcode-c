@@ -27,6 +27,8 @@ int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes
   	result = malloc(size * sizeof(int *));
     
 	for (i = 0; i < numsSize - 2; i++) {
+		if (nums[i] > 0)
+			break;
 		if (i > 0 && nums[i] == nums[i-1])
 			continue;
 		found = 0;
