@@ -22,7 +22,7 @@ struct node
 int **fourSum(int *nums, int numsSize, int target, int *returnSize, int **returnColumnSizes)
 {
 	int ***hashtable = calloc(BUCKETS + 1, sizeof(int **));
-	int i, j;
+	int i, j, size, dup;
 	int buffSize = numsSize;
 	int **result = malloc(sizeof(int *) * buffSize);
 	int len = 0;
@@ -30,10 +30,22 @@ int **fourSum(int *nums, int numsSize, int target, int *returnSize, int **return
 	// sort
 	qsort(nums, numsSize, sizeof(int), compare);
 
+	// remove duplicated elements more than 4 times
+	for (i = 1, size = 1, dup = 0; i < numsSize; i++) {
+		if (nums[i] == nums[i-1]) {
+			dup++;
+			if (dup < 4)
+				nums[size++] = nums[i];
+		} else {
+			dup = 0;
+			nums[size++] = nums[i];
+		}
+	}
+
 	// construct hashtable
-	for (i = 0; i < numsSize - 1; i++)
+	for (i = 0; i < size - 1; i++)
 	{
-		for (j = i + 1; j < numsSize; j++)
+		for (j = i + 1; j < size; j++)
 		{
 			int sum = nums[i] + nums[j];
 			int hash = ((long long)sum + 2000000000) / BUCKET_SIZE;
@@ -56,13 +68,8 @@ int **fourSum(int *nums, int numsSize, int target, int *returnSize, int **return
 				int x;
 				while (tmp->next != 0)
 				{
-					if (i == tmp->index1)
+					if (i == tmp->index1)	// avoid dup
 						break;
-					if (nums[i] == nums[tmp->index1]) {
-                        x++;
-                        if (x == 3)
-                            break;
-                    }
 					tmp = tmp->next;
 				}
 				if (tmp->next == 0)
@@ -72,9 +79,9 @@ int **fourSum(int *nums, int numsSize, int target, int *returnSize, int **return
 	}
 
 	// searching
-	for (i = 0; i < numsSize - 1; i++)
+	for (i = 0; i < size - 1; i++)
 	{
-		for (j = i + 1; j < numsSize; j++)
+		for (j = i + 1; j < size; j++)
 		{
 			int sum = nums[i] + nums[j];
 			int t = target - sum;
@@ -94,8 +101,7 @@ int **fourSum(int *nums, int numsSize, int target, int *returnSize, int **return
 					{
 						if (result[k][0] == nums[i] &&
 							result[k][1] == nums[j] &&
-							result[k][2] == nums[tmp->index1] &&
-							result[k][3] == nums[tmp->index2])
+							result[k][2] == nums[tmp->index1])
 							break;
 					}
 					/* not found */
@@ -126,6 +132,7 @@ int **fourSum(int *nums, int numsSize, int target, int *returnSize, int **return
 	// todo: free alloced hashtable memory
 	return result;
 }
+
 
 int main(void)
 {
