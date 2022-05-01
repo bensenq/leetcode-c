@@ -9,7 +9,7 @@ int findContentChildren(int* g, int gSize, int* s, int sSize){
     int i = 0, j = 0;
     qsort(g, gSize, sizeof(int), compare);
     qsort(s, sSize, sizeof(int), compare);
-    while (i < gSize && s < sSize) {
+    while (i < gSize && j < sSize) {
         if (g[i] > s[j]) {
             j++;
         } else {
