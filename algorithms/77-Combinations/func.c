@@ -1,11 +1,8 @@
 long C(int n, int k) {
     if (k > n/2) k = n - k;
-    long result = n;
-    for (int i = 1; i < k; i++) {
-        result *= (n-i);
-    }
-    for (int i = 0; i < k; i++) {
-        result /= (k - i);
+    long result = 1;
+    for (int i = 1; i <= k; i++) {
+        result = result*(n-k+i)/i;
     }
     return result;
 }
