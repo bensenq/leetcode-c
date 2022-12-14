@@ -90,6 +90,7 @@ struct TreeNode** generateTrees(int n, int* returnSize){
         for (j = 0; j < sizes[i]; j++) {
             deleteTree(Trees[i][j]);
         }
+        free(Trees[i]);
     }
     
     return result;
