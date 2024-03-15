@@ -1,6 +1,5 @@
 //ref: https://leetcode.com/problems/first-missing-positive/solutions/17080/python-o-1-space-o-n-time-solution-with-explanation/
 
-//bitmap solution
 int firstMissingPositive(int* nums, int numsSize) {
     int i = 0;
     while(i < numsSize) {
@@ -11,16 +10,14 @@ int firstMissingPositive(int* nums, int numsSize) {
     }
     
     for (i = 0; i < numsSize; i++) {
-        nums[nums[i]%numsSize] += numsSize;
+        if (nums[i] % (numsSize+1) > 0)
+            nums[nums[i]%(numsSize+1)-1] += numsSize+1;
     }
 
-    for (i = 1; i < numsSize; i++) {
-        if (nums[i]/numsSize == 0)
-            return i;
+    for (i = 0; i < numsSize; i++) {
+        if (nums[i] <= numsSize)
+            return i+1;
     }
-
-    if (nums[0]/numsSize == 0)
-        return numsSize;
 
     return numsSize+1; 
 }
