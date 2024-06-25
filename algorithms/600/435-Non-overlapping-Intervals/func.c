@@ -2,7 +2,11 @@
 // ref https://leetcode.com/problems/non-overlapping-intervals/solutions/91713/java-least-is-most
 
 int compare (const void * a, const void * b){
-	return (*(int**)a)[1] - (*(int**)b)[1];
+    const int **ca = a;
+    const int **cb = b;
+	if ((*ca)[1] < (*cb)[1]) return -1;
+    else if ((*ca)[1] > (*cb)[1]) return 1;
+    else return 0;
 }
 
 int eraseOverlapIntervals(int** intervals, int intervalsSize, int* 
