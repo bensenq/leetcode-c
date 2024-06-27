@@ -4,23 +4,25 @@ int largestRectangleArea(int* heights, int heightsSize) {
     int max = 0;
     lindex[0] = 0;
 
-    /* get longest value index larger than current index of left */
     for (int i = 1; i < n; i++) {
         if (heights[i] == heights[i-1]) {
             lindex[i] = lindex[i-1];
         } else if (heights[i] > heights[i-1]) {
             lindex[i] = i;
         } else {
-            int last = lindex[i-1];
-            for (int j = lindex[i-1]; j >= 0; j--) {
-                if (heights[j] < heights[i]) break;
-                else last = j;
+            int j = lindex[i-1];
+            while (j >= 0 && heights[j] >= heights[i]) {
+                lindex[i] = j;
+                if (j != lindex[j])
+                    j = lindex[j];
+                else
+                    j--;
             }
-            lindex[i] = last;
+            if (j < 0) lindex[i] = 0;
         }
     }
-    
-    /* get longest value index larger than current index of right */
+
+
     rindex[n-1] = n-1;
     for (int i = n - 2; i >= 0; i--) {
         if (heights[i] == heights[i+1]) {
@@ -28,17 +30,20 @@ int largestRectangleArea(int* heights, int heightsSize) {
         } else if (heights[i] > heights[i+1]) {
             rindex[i] = i;
         } else {
-            int last = rindex[i+1];
-            for (int j = rindex[i+1]; j < n; j++) {
-                if (heights[j] < heights[i]) break;
-                else last = j;
+            int j = rindex[i+1];
+            while (j < n && heights[j] >= heights[i]) {
+                rindex[i] = j;
+                if (j != rindex[j])
+                    j = rindex[j];
+                else
+                    j++;
             }
-            rindex[i] = last;
+            if (j == n) rindex[i] = n - 1;
         }
     }
 
     for (int i = 0; i < n; i++) {
-        int s = (rindex[i] - lindex[i] +  + 1) * heights[i];
+        int s = (rindex[i] - lindex[i] + 1) * heights[i];
         if (s > max) max = s;
     }
 
