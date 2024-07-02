@@ -7,7 +7,7 @@
 int maxProduct(int* nums, int numsSize) {
     // store the result that is the max we have found so far
     int i;
-    double imax, imin, tmp; // overcome the overflow case
+    int imax, imin, tmp; 
     int r = nums[0];
 
     // imax/imin stores the max/min product of
@@ -23,8 +23,8 @@ int maxProduct(int* nums, int numsSize) {
 
         // max/min product for the current number is either the current number itself
         // or the max/min by the previous number times the current one
-        imax = max(nums[i], imax * nums[i]);
-        imin = min(nums[i], imin * nums[i]);
+        imax = max(nums[i], imax * (double)nums[i]);    // overcome the overflow case
+        imin = min(nums[i], imin * (double)nums[i]);
 
         // the newly computed max value is a candidate for our global result
         r = max(r, imax);
