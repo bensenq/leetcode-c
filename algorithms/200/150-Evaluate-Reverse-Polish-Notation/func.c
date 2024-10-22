@@ -1,27 +1,27 @@
 int evalRPN(char** tokens, int tokensSize) {
-    long long *stack = calloc(sizeof(long long), (tokensSize / 2 + 1));
-    int top = 0, i = 0, value;
-    while(i < tokensSize) {
-        if (strcmp(tokens[i], "+") == 0) {
-            stack[top-2] = stack[top-2] + stack[top-1];
-            top--;
-        } else if (strcmp(tokens[i], "-") == 0) {
-            stack[top-2] = stack[top-2] - stack[top-1];
-            top--;
-        } else if (strcmp(tokens[i], "*") == 0) {
-            stack[top-2] = stack[top-2] * stack[top-1];
-            top--;
-        } else if (strcmp(tokens[i], "/") == 0) {
-            stack[top-2] = stack[top-2] / stack[top-1];
-            top--;
+    int *stack = malloc(sizeof(int)*(tokensSize/2+1));
+    int top = 0, ans;
+    for(int i = 0; i<tokensSize; i++) {
+        if (strcmp(tokens[i], "+") == 0 || 
+            strcmp(tokens[i], "-") == 0 ||
+            strcmp(tokens[i], "*") == 0 ||
+            strcmp(tokens[i], "/") == 0) {
+            if (strcmp(tokens[i], "+") == 0) {
+                ans = stack[top-2] + stack[top-1];
+            } else if (strcmp(tokens[i], "-") == 0) {
+                ans = stack[top-2] - stack[top-1];
+            } else if (strcmp(tokens[i], "*") == 0) {
+                ans = stack[top-2] * stack[top-1];
+            } else {
+                ans = stack[top-2] / stack[top-1];
+            }
+            top -= 2;
+            stack[top++] = ans;
         } else {
-            value = atoi(tokens[i]);
-            stack[top] = value;
-            top++;
+            stack[top++] = atoi(tokens[i]);
         }
-        i++;
     }
-    int ans = stack[0];
+    ans = stack[0];
     free(stack);
     return ans;
 }
