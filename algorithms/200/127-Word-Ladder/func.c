@@ -27,34 +27,10 @@ bool oneDiff(char *first, char *second) {
 int ladderLength(char* beginWord, char* endWord, char** wordList, int wordListSize) {
     int endIndex = inList(endWord, wordList, wordListSize);
     if (endIndex == -1) return 0;
-    int ans;
+    int ans = 0;
     int len = strlen(beginWord);
-    char **relation = malloc(sizeof(char*)*(wordListSize+1));
-    for (int i = 0; i <= wordListSize; i++) {
-        relation[i] = malloc(sizeof(char) * wordListSize);
-    }
     int *distance = calloc(sizeof(int), wordListSize);  //0 means not covered
 
-    for (int i = 0; i < wordListSize-1; i++) {
-        for (int j = i+1; j < wordListSize; j++) {
-            if (oneDiff(wordList[i], wordList[j])) {
-                relation[i][j] = 1;
-                relation[j][i] = 1;
-            } else {
-                relation[i][j] = 0;
-                relation[j][i] = 0;
-            }
-        }
-    }
-    for (int i = 0; i < wordListSize; i++) {
-        if (oneDiff(beginWord, wordList[i])) {
-            relation[wordListSize][i] = 1;
-        } else {
-            relation[wordListSize][i] = 0;
-        }
-    }
-    
-    //char *visited = calloc(1, wordListSize);
     int newReach;
     int currentDepth = 1;
     distance[endIndex] = 1;
@@ -62,12 +38,12 @@ int ladderLength(char* beginWord, char* endWord, char** wordList, int wordListSi
         newReach = 0;
         for (int i = 0; i < wordListSize; i++) {
             if (distance[i] == currentDepth) {
-                if (relation[wordListSize][i] == 1) {
+                if (oneDiff(beginWord, wordList[i])) {
                     ans = currentDepth + 1;
                     goto found;
                 }
                 for(int j = 0; j < wordListSize; j++) {
-                    if(distance[j] == 0 && relation[i][j] == 1) {
+                    if(distance[j] == 0 && oneDiff(wordList[i], wordList[j])) {
                         distance[j] = currentDepth+1;
                         newReach++;
                     }
@@ -77,14 +53,8 @@ int ladderLength(char* beginWord, char* endWord, char** wordList, int wordListSi
         if(newReach == 0)break;
         currentDepth++;
     }
-
 found:
-    // cleanup
-    for (int i = 0; i <= wordListSize; i++) {
-        free(relation[i]);
-    }
-    free(relation);
-
+    free(distance);
     return ans;
 }
 
