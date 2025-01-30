@@ -29,6 +29,8 @@ char *** partition(char* s, int* returnSize, int** returnColumnSizes) {
 	int len = strlen(s);
 	struct dp dp[len+1];
 	dp[0].size = 1;
+    dp[0].array = malloc(sizeof(char *));
+    dp[0].array[0] = malloc(0);
 	int i = 1;
 	while (i <= len) {
         dp[i].size = 0;
@@ -45,6 +47,7 @@ char *** partition(char* s, int* returnSize, int** returnColumnSizes) {
                         m += dp[j].array[k][n];
                         n++;
                     }
+                    strncpy(dp[i].array[x+k], dp[j].array[k], n);
                     dp[i].array[x+k][n] = i-j; 
 				}
 				dp[i].size = x + y;
@@ -72,8 +75,8 @@ char *** partition(char* s, int* returnSize, int** returnColumnSizes) {
 		columnSizes[i] = j;
 	}
 	
-	//cleanup dp[1] ~ dp[len] memory
-	for (int i = 1; i <= len; i++) {
+	//cleanup dp[0] ~ dp[len] memory
+	for (int i = 0; i <= len; i++) {
 		for (int j = 0; j < dp[i].size; j++)free(dp[i].array[j]);
 		free(dp[i].array);
 	}
