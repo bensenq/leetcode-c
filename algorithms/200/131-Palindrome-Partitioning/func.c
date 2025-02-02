@@ -32,11 +32,13 @@ char *** partition(char* s, int* returnSize, int** returnColumnSizes) {
     dp[0].array = malloc(sizeof(char *));
     dp[0].array[0] = malloc(0);
 	int i = 1;
+    char *palindrome[len][len+1];
 	while (i <= len) {
         dp[i].size = 0;
         dp[i].array = malloc(sizeof(char*) * 0);
 		for (int j = 0; j < i; j++) {
 			if (isPalindrome(s+j, i-j)) {
+                palindrome[j][i-j] = strndup(s+j, i-j);
                 int x = dp[i].size, y = dp[j].size;
 				dp[i].array = realloc(dp[i].array, sizeof(char*) * (x + y));
 				for (int k = 0; k < y; k++) {
@@ -62,17 +64,21 @@ char *** partition(char* s, int* returnSize, int** returnColumnSizes) {
 	char ***result = malloc(dp[len].size * sizeof(char **));
     *returnColumnSizes = columnSizes;
 	for (int i = 0; i < dp[len].size; i++) {
-		int size = 0;
-		int j = 0;
-		result[i] = malloc(0);
+		int size = 0, j = 0;
 		while (size != len) {
-            int m = dp[len].array[i][j];
-			result[i] = realloc(result[i], (j+1)*sizeof(char*));
-			result[i][j] = strndup(s+size, m);
-            size += m;
+            int l = dp[len].array[i][j];
+            size += l;
 			j++;
 		}
-		columnSizes[i] = j;
+        result[i] = malloc(sizeof(char*)*j);
+        columnSizes[i] = j;
+        size = 0; j = 0;
+        while(size != len) {
+            int l = dp[len].array[i][j];
+            result[i][j] = palindrome[size][l];
+            size += l;
+            j++;
+        }		
 	}
 	
 	//cleanup dp[0] ~ dp[len] memory
