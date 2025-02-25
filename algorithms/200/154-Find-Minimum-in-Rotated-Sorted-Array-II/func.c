@@ -3,7 +3,7 @@ int findMin(int* nums, int numsSize) {
     int right = numsSize - 1;
 
     while (left < right) {
-        int mid = (left + right) / 2;
+        int mid = left + (right - left) / 2;
 
         // If the middle element is less than the rightmost element,
         // the minimum value must be in the left half (including mid).
