@@ -1,4 +1,4 @@
-# Leetcode Solutio in C
+# Leetcode Solution in C
 
 `genname.sh` for creating directory for problem.
 
