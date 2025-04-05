@@ -3,16 +3,13 @@ long long maximumTripletValue(int* nums, int numsSize) {
 
     // Arrays to store the maximum and minimum values to the right of each position
     int maxRight[numsSize];
-    int minRight[numsSize];
 
     // Initialize the maximum and minimum values to the right
     maxRight[numsSize - 1] = nums[numsSize - 1];
-    minRight[numsSize - 1] = nums[numsSize - 1];
 
     // Fill the maxRight and minRight arrays
     for (int i = numsSize - 2; i >= 0; i--) {
         maxRight[i] = (nums[i] > maxRight[i + 1]) ? nums[i] : maxRight[i + 1];
-        minRight[i] = (nums[i] < minRight[i + 1]) ? nums[i] : minRight[i + 1];
     }
 
     long long maxVal = 0; // Variable to store the maximum value
@@ -25,14 +22,6 @@ long long maximumTripletValue(int* nums, int numsSize) {
                 // If nums[i] - nums[j] > 0, try to calculate with the maximum value to the right
                 if (maxRight[j + 1] > 0) {
                     long long value = diff * maxRight[j + 1];
-                    if (value > maxVal) {
-                        maxVal = value;
-                    }
-                }
-            } else {
-                // If nums[i] - nums[j] < 0, try to calculate with the minimum value to the right
-                if (minRight[j + 1] < 0) {
-                    long long value = diff * minRight[j + 1];
                     if (value > maxVal) {
                         maxVal = value;
                     }
