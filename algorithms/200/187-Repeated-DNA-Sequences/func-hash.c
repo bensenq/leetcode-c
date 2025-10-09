@@ -1,69 +1,82 @@
 typedef struct {
-    int key;        /* 20-bit hash of a 10-letter DNA window */
-    int  id;        /* 1 = seen once, 2 = already reported as duplicate */
+    uint32_t key;   /* 20-bit rolling hash */
+    int      id;    /* 1=seen once, 2=duplicated */
     UT_hash_handle hh;
 } entry;
 
-/* dynamic array for the answer */
 typedef struct {
-    char **seq;     /* array of 10-char DNA substrings */
-    int  cnt;       /* number of stored substrings */
-    int  cap;       /* current capacity */
+    char **seq;
+    int  cnt;
+    int  cap;
 } res_t;
 
-/* encode 10 successive bases into a 20-bit integer
-   A/a = 0, C/c = 1, G/g = 2, T/t = 3
-   returns -1 on illegal character */
-static int encode(const char *s) {
-    int v = 0;
-    for (int i = 0; i < 10; ++i) {
-        int b;
-        switch (s[i]) {
-            case 'A': case 'a': b = 0; break;
-            case 'C': case 'c': b = 1; break;
-            case 'G': case 'g': b = 2; break;
-            case 'T': case 't': b = 3; break;
-            default: return -1;
-        }
-        v = (v << 2) | b;
+/* convert ACGT -> 0..3 , return -1 on illegal char */
+static inline int baseBits(char c) {
+    switch (c) {
+        case 'A': case 'a': return 0;
+        case 'C': case 'c': return 1;
+        case 'G': case 'g': return 2;
+        case 'T': case 't': return 3;
+        default:            return -1;
     }
-    return v;
 }
 
-/* find all 10-letter DNA substrings that occur more than once
-   returnSize is set to the length of the returned array */
+/* build initial 20-bit hash for the first 10 chars */
+static uint32_t encode10(const char *s) {
+    uint32_t h = 0;
+    for (int i = 0; i < 10; ++i) h = (h << 2) | baseBits(s[i]);
+    return h;
+}
+
 char **findRepeatedDnaSequences(const char *s, int *returnSize) {
-    entry *seen = NULL;          /* hash table for encountered windows */
-    res_t  rv   = { NULL, 0, 8 };
+    int len = strlen(s);
+    if (len < 10) {                 /* too short */
+        *returnSize = 0;
+        return NULL;
+    }
+
+    entry *seen = NULL;
+    res_t  rv   = {NULL, 0, 8};
     rv.seq = malloc(rv.cap * sizeof(char *));
 
-    int len = strlen(s);
-    for (int i = 0; i <= len - 10; ++i) {
-        int key = encode(s + i);
-        if (key < 0) continue;              /* skip invalid characters */
+    /* step-1: initial window */
+    uint32_t h = encode10(s);
+    entry *e = malloc(sizeof(*e));
+    e->key = h;
+    e->id  = 1;
+    HASH_ADD_INT(seen, key, e);
 
-        entry *e;
-        HASH_FIND_INT(seen, &key, e);
-        if (!e) {                           /* first time we see this window */
+    uint32_t mask = 0x3FFFF; /* 20 low bits */
+
+    /* step-2: slide window one base at a time */
+    for (int i = 1; i <= len - 10; ++i) {
+        int out = baseBits(s[i - 1]);        /* leftmost base leaving */
+        int in  = baseBits(s[i + 9]);        /* new rightmost base   */
+        if (out < 0 || in < 0) continue;     /* skip invalid chars   */
+
+        /* roll the hash: remove top 2 bits, append bottom 2 bits */
+        h = ((h & mask) << 2) | in;
+
+        HASH_FIND_INT(seen, &h, e);
+        if (!e) {                           /* first time seen */
             e = malloc(sizeof(*e));
-            e->key = key;
+            e->key = h;
             e->id  = 1;
             HASH_ADD_INT(seen, key, e);
-        } else if (e->id == 1) {            /* second time – record duplicate */
+        } else if (e->id == 1) {            /* second time – duplicate */
             e->id = 2;
-            if (rv.cnt == rv.cap) {         /* grow result array if needed */
+            if (rv.cnt == rv.cap) {
                 rv.cap <<= 1;
                 rv.seq = realloc(rv.seq, rv.cap * sizeof(char *));
             }
-            char *t = malloc(11);           /* copy 10 bases + '\0' */
+            char *t = malloc(11);
             memcpy(t, s + i, 10);
             t[10] = '\0';
             rv.seq[rv.cnt++] = t;
         }
-        /* id == 2  => already reported, nothing to do */
     }
 
-    /* free the hash table */
+    /* free hash table */
     entry *cur, *tmp;
     HASH_ITER(hh, seen, cur, tmp) {
         HASH_DEL(seen, cur);
