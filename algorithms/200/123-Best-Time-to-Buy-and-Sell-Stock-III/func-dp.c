@@ -1,8 +1,8 @@
 //1st HOLD 0, 1st UNHOLD 1 2ed HOLD 2, 2ed UNHOLD
 //dp[i][HOLD1] = max(dp[i-1][HOLD1], -prices[i])
-//dp[i][UNHOLD1] = max(dp[i-1][UNHOLD1], dp[i-1][HOLD1]+prices[i])
-//dp[i][HOLD2] = max(dp[i-1][HOLD2], dp[i-1][UNHOLD1]-prices[i])
-//dp[i][UNHOLD2] = max(dp[i-1][UNHOLD2], dp[i-1][HOLD2]+prices[i])
+//dp[i][UNHOLD1] = max(dp[i-1][UNHOLD1], dp[i][HOLD1]+prices[i])
+//dp[i][HOLD2] = max(dp[i-1][HOLD2], dp[i][UNHOLD1]-prices[i])
+//dp[i][UNHOLD2] = max(dp[i-1][UNHOLD2], dp[i][HOLD2]+prices[i])
 //result = dp[pricesSize-1][UNHOLD2]
 
 /*
@@ -27,9 +27,9 @@ int maxProfit(int* prices, int pricesSize) {
     dp[0][UNHOLD2] = 0;
     for(int i = 1; i < pricesSize; i++) {
         dp[i][HOLD1] = max(dp[i-1][HOLD1], -prices[i]);
-        dp[i][UNHOLD1] = max(dp[i-1][UNHOLD1], dp[i-1][HOLD1]+prices[i]);
-        dp[i][HOLD2] = max(dp[i-1][HOLD2], dp[i-1][UNHOLD1]-prices[i]);
-        dp[i][UNHOLD2] = max(dp[i-1][UNHOLD2], dp[i-1][HOLD2]+prices[i]);
+        dp[i][UNHOLD1] = max(dp[i-1][UNHOLD1], dp[i][HOLD1]+prices[i]);
+        dp[i][HOLD2] = max(dp[i-1][HOLD2], dp[i][UNHOLD1]-prices[i]);
+        dp[i][UNHOLD2] = max(dp[i-1][UNHOLD2], dp[i][HOLD2]+prices[i]);
     }
     return dp[pricesSize-1][UNHOLD2];
 }
