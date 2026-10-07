@@ -1,6 +1,6 @@
 typedef struct _stack {
     int top;
-    int data[100];
+    int data[200];
 } stack;
 
 stack *stackCreate() {
