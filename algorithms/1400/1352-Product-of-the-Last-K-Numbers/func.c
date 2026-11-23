@@ -7,8 +7,8 @@ typedef struct {
 
 ProductOfNumbers* productOfNumbersCreate() {
     ProductOfNumbers *obj = malloc(sizeof(ProductOfNumbers));
-    obj->lenProduct = malloc(sizeof(int) * 40000);
-    obj->reversedProduct = malloc(sizeof(int) * 40000);
+    obj->lenProduct = malloc(sizeof(int) * 40001);
+    obj->reversedProduct = malloc(sizeof(int) * 40001);
     obj->reversedProduct[0] = 1;
     obj->lenProduct[0] = 0;
     obj->count = 1;
